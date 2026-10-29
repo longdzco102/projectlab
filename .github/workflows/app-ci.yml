@@ -1,0 +1,45 @@
+name: "App CI (Node.js & Frontend)"
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "Dockerfile"
+      - ".github/workflows/app-ci.yml"
+  pull_request:
+    branches: [ "main", "develop" ]
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "Dockerfile"
+      - ".github/workflows/app-ci.yml"
+
+jobs:
+  test-and-lint:
+    name: "Lint & Unit Test"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: backend/package.json
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=critical || true
+
+      - name: Run tests
+        run: npm test

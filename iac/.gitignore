@@ -1,0 +1,29 @@
+# Terraform working data
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+crash.log
+crash.*.log
+
+# Overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI / local config
+.terraformrc
+terraform.rc
+
+# Local values that may contain secrets
+terraform.tfvars
+*.auto.tfvars
+backend.hcl
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

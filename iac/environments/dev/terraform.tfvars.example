@@ -1,0 +1,66 @@
+# Copy to terraform.tfvars and adjust. terraform.tfvars is git-ignored.
+
+aws_region   = "ap-southeast-1"
+project_name = "xianxia-chat"
+environment  = "dev"
+
+# --- Networking ---------------------------------------------------------------
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24"]
+
+# Cheapest option for dev. Set to false to get one NAT gateway per AZ.
+single_nat_gateway    = true
+enable_vpc_flow_logs  = false
+
+# --- Compute ------------------------------------------------------------------
+instance_type  = "t3.small"
+asg_min_size   = 1
+asg_desired_capacity = 1
+asg_max_size   = 2
+root_volume_size = 30
+
+# No SSH at all: administration happens through SSM Session Manager.
+allowed_ssh_cidr = null
+# allowed_ssh_cidr = "203.0.113.10/32"
+# key_pair_name    = "my-existing-key"
+
+app_port          = 3000
+health_check_path = "/health"
+
+# NOTE: the ASG uses ELB health checks. Instances must serve health_check_path
+# with a 2xx response, otherwise they are replaced in a loop. Either provide a
+# cloud-init script that installs/starts the app, or point health_check_path at
+# an endpoint that already exists on the base AMI.
+# user_data = <<-EOT
+#   #!/bin/bash
+#   set -euo pipefail
+#   apt-get update -y
+#   apt-get install -y docker.io
+#   systemctl enable --now docker
+# EOT
+
+# --- Database -----------------------------------------------------------------
+db_instance_class        = "db.t3.micro"
+db_allocated_storage     = 20
+db_max_allocated_storage = 100
+db_engine_version        = "16"
+db_name                  = "webchat"
+db_master_username       = "dbadmin"
+
+db_multi_az               = false
+db_deletion_protection    = false
+db_skip_final_snapshot    = true
+# db.t3.micro may not support Performance Insights; enable it on production classes.
+db_performance_insights_enabled = false
+# Required only when db_skip_final_snapshot = false. Must be unique per destroy.
+# db_final_snapshot_identifier = "xianxia-chat-dev-final-20261024"
+
+# --- TLS / DNS (optional) -----------------------------------------------------
+enable_https = false
+# certificate_arn = "arn:aws:acm:ap-southeast-1:111122223333:certificate/xxxx"
+# domain_name     = "chat.example.com"
+# route53_zone_id = "Z0123456789ABCDEFGHIJ"
+
+# Must already exist and allow the ELB account to write (see README).
+# alb_access_logs_bucket = "my-alb-access-logs"

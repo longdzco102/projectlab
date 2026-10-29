@@ -1,0 +1,11 @@
+# Bootstrap these resources once (see ../../README.md), then copy this file to
+# backend.hcl and replace the placeholders.
+bucket         = "change-me-terraform-state"
+key            = "xianxia-chat/dev/terraform.tfstate"
+region         = "ap-southeast-1"
+encrypt        = true
+dynamodb_table = "xianxia-chat-terraform-locks"
+
+# Terraform >= 1.10 can replace the DynamoDB lock table with native S3 locking:
+# use_lockfile = true
+# (do not set both dynamodb_table and use_lockfile)
