@@ -4,7 +4,6 @@ const http = require('node:http');
 const { app, server } = require('../src/app');
 
 test('GET /health trả về HTTP 200 và status ok', async (t) => {
-    // Đóng server sau khi chạy xong test
     t.after(() => {
         server.close();
     });
