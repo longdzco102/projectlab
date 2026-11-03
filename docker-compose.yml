@@ -1,5 +1,4 @@
 services:
-  # ── 1. Web & API Application ──────────────────────────────
   app:
     build:
       context: .
@@ -23,7 +22,6 @@ services:
       db:
         condition: service_healthy
 
-  # ── 2. PostgreSQL Database (Khớp RDS Postgres 16) ────────
   db:
     image: postgres:16-alpine
     container_name: xianxia-chat-db
